@@ -16,7 +16,6 @@ type Request struct {
 	Protocol string
 	Version uint8
     Method   string
-    Path string
 }
 
 type ClientJob struct {
@@ -94,15 +93,15 @@ func handleRequest(conn *net.UDPConn, job ClientJob) {
 		return
 	}
 
-	log.Println("[" + job.Client.String() + "] " + req.Protocol + "/" + strconv.Itoa(int(req.Version)) + " " + req.Method + " " + req.Path)
+	log.Println("[" + job.Client.String() + "] " + req.Protocol + "/" + strconv.Itoa(int(req.Version)) + " " + req.Method)
 
 	if req.Version != sentinelProtocolVersion {
 		log.Println("Protocol version mismatch detected!")
 	}
 
 	var fn func(*net.UDPConn, Request, *net.UDPAddr)
-	switch req.Path {
-	case "/external_address":
+	switch req.Method {
+	case "#external_address":
 		fn = externalAddressHandler
 	}
 
@@ -126,12 +125,10 @@ func parseRequest(data []byte) (Request, error) {
 		return Request{}, err
 	}
 	method := parts[1]
-	path := parts[2]
 
 	return Request{
 		Protocol: protocol,
 		Version: uint8(version),
 		Method: method,
-		Path: path,
 	}, nil
 }
