@@ -17,7 +17,6 @@ sentinel/0 #external_address
 ### Python
 ```python
 import socket
-import struct
 
 target = ("127.0.0.1", 23500)
 
